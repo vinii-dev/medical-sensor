@@ -1,30 +1,33 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { BarCodeScanner, BarCodeScannerResult } from 'expo-barcode-scanner';
 import { Camera as NativeCamera } from 'expo-camera';
-import React, { useState } from 'react';
-import { Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Dimensions, Text } from 'react-native';
 import { Camera, Container, QrCloseButton } from './styles';
 
 type QrCodeCameraType = {
   onHandleBarCodeScanned: (result: BarCodeScannerResult) => void; //eslint-disable-line no-unused-vars
   onIconClose: () => void;
-}
+};
 
-export const QrCodeCamera = ({ onHandleBarCodeScanned, onIconClose }: QrCodeCameraType) => {
+export const QrCodeCamera = ({
+  onHandleBarCodeScanned,
+  onIconClose,
+}: QrCodeCameraType) => {
   const [camera, setCamera] = useState<NativeCamera | null>(null);
 
   const [imagePadding, setImagePadding] = useState(0);
-  const [ratio, setRatio] = useState('4:3');  // default is 4:3
+  const [ratio, setRatio] = useState('4:3'); // default is 4:3
   const { height, width } = Dimensions.get('window');
   const screenRatio = height / width;
-  const [isRatioSet, setIsRatioSet] =  useState(false);
+  const [isRatioSet, setIsRatioSet] = useState(false);
 
   const prepareRatio = async () => {
     let desiredRatio = '4:3';
 
     const ratios = await camera?.getSupportedRatiosAsync();
 
-    if(!ratios) {
+    if (!ratios) {
       throw 'Camera não inicializada';
     }
 
@@ -36,8 +39,8 @@ export const QrCodeCamera = ({ onHandleBarCodeScanned, onIconClose }: QrCodeCame
       const parts = ratio.split(':');
       const realRatio = parseInt(parts[0]) / parseInt(parts[1]);
       realRatios[ratio] = realRatio;
-      
-      const distance = screenRatio - realRatio; 
+
+      const distance = screenRatio - realRatio;
       distances[ratio] = realRatio;
       if (minDistance == null) {
         minDistance = ratio;
@@ -51,20 +54,20 @@ export const QrCodeCamera = ({ onHandleBarCodeScanned, onIconClose }: QrCodeCame
     if (!minDistance) {
       throw 'Não foi possível encontrar uma distância miníma dos ratios';
     }
-    
+
     desiredRatio = minDistance;
-    
+
     const remainder = Math.floor(
       (height - realRatios[desiredRatio] * width) / 2
     );
-    
+
     setImagePadding(remainder);
     setRatio(desiredRatio);
-    
+
     setIsRatioSet(true);
   };
 
-  const setCameraReady = async() => {
+  const setCameraReady = async () => {
     if (!isRatioSet) {
       await prepareRatio();
     }
@@ -79,12 +82,13 @@ export const QrCodeCamera = ({ onHandleBarCodeScanned, onIconClose }: QrCodeCame
         }}
         onBarCodeScanned={onHandleBarCodeScanned}
         ratio={ratio}
+        style={{ flex: 1 }}
         ref={(ref) => {
           setCamera(ref);
-        }}>
-      </Camera>
+        }}
+      ></Camera>
       <QrCloseButton margin={imagePadding} onPress={onIconClose}>
-        <MaterialIcons name='close' size={32} color="#fff" />
+        <MaterialIcons name="close" size={32} color="#fff" />
       </QrCloseButton>
     </Container>
   );

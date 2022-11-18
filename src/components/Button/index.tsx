@@ -4,10 +4,8 @@ import { ButtonText, PrimaryButton } from './styles';
 
 export const Button = (props: TouchableHighlightProps) => {
   return (
-    <PrimaryButton {...props} >
-      <ButtonText>
-        {props.children}
-      </ButtonText>
+    <PrimaryButton {...props}>
+      <ButtonText>{props.children}</ButtonText>
     </PrimaryButton>
   );
 };

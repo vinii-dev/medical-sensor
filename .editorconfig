@@ -1,0 +1,6 @@
+root = true
+
+[*.{js,ts,jsx,tsx}]
+quote_type = single
+indent_style = space
+indent_size = 2

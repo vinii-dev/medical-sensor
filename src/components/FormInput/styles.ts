@@ -18,6 +18,7 @@ export const Input = styled.TextInput`
   font-size: 16px;
   flex: 1;
 
+  white-space: nowrap;
   margin-right: 16px;
 `;
 
@@ -33,7 +34,7 @@ export const Container = styled.View<ContainerType>`
   border: ${props => props.focus
     ? '2px solid '+props.theme.colors.primary 
     : '1px solid #ddd'
-  // eslint-disable-next-line indent
+    // eslint-disable-next-line indent
   };
 `;
 
